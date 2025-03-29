@@ -49,6 +49,8 @@ export default async function handler(req, res) {
         // Fetch the video URL with redirects allowed
         const response = await fetch(videoUrl, { redirect: 'follow' });
 
+        console.log(res);
+
         // Log headers to check if they are coming through
         console.log('Response Headers:', response.headers);
 
