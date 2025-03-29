@@ -3,10 +3,28 @@ import cors from "cors";
 import fetch from "node-fetch"; // Replacement for request
 
 export default async function handler(req, res) {
-    const videoUrl = req.query.url; // assuming URL is passed as a query parameter
+    // const videoUrl = req.query.url; // assuming URL is passed as a query parameter
+    const queryParams = req.query;
+    let videoUrl = queryParams.url;
+
     if (!videoUrl) {
         return res.status(400).json({ error: 'Missing video URL' });
     }
+
+    // Create a URL object to handle parameters more easily
+    let urlObj = new URL(videoUrl);
+    
+    // Append query parameters
+    for (const [key, value] of Object.entries(queryParams)) {
+        if (key !== 'url') {
+            urlObj.searchParams.set(key, value);
+        }
+    }
+
+    // Get the updated video URL
+    videoUrl = urlObj.toString();
+
+    console.log(videoUrl); // Log the final URL to see what we are working with
 
     try {
         // Fetch the video URL with redirects allowed
