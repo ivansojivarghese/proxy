@@ -30,17 +30,24 @@ export default async function handler(req, res) {
 
     console.log(videoUrl); // Log the final URL to see what we are working with
 
+    res.setHeader('Access-Control-Allow-Origin', 'https://media-sphere.vercel.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
     try {
         // Custom headers to simulate a real browser request
+        /*
         const headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             'Referer': 'https://www.youtube.com/',
             'Origin': 'https://www.youtube.com/',
             'Accept': 'video/webm,video/mp4',  // Accept video formats
-        };
+        };*/
+
+
 
         // Fetch the video URL with redirects allowed
-        const response = await fetch(videoUrl, { headers, redirect: 'follow' });
+        const response = await fetch(videoUrl, { redirect: 'follow' });
 
         // Log headers to check if they are coming through
         console.log('Response Headers:', response.headers);
