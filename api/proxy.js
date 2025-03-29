@@ -1,20 +1,25 @@
-
-
 import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary
-cloudinary.config({ 
-  cloud_name: 'Media Sphere', // Use the actual Cloud name
-  api_key: '996633859944319', // Use the actual API Key
-  api_secret: 'xBOhm7W-TZvYxCAK7VunPHStcjo' // Use the actual API Secret
+cloudinary.config({
+  cloud_name: 'Media Sphere',
+  api_key: '996633859944319',
+  api_secret: 'xBOhm7W-TZvYxCAK7VunPHStcjo'
 });
 
 // Vercel serverless function handler
 export default async function handler(req, res) {
 
-    res.setHeader('Access-Control-Allow-Origin', 'https://media-sphere.vercel.app');
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Set CORS headers for preflight requests
+  res.setHeader('Access-Control-Allow-Origin', 'https://media-sphere.vercel.app'); // Specify allowed origin
+  res.setHeader('Access-Control-Allow-Methods', 'POST');  // Allow POST requests
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow content-type header
+  res.setHeader('Access-Control-Allow-Credentials', 'true');  // Optional: Allow credentials (if needed)
+
+  // Handle preflight request (OPTIONS method)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -29,8 +34,8 @@ export default async function handler(req, res) {
 
   try {
     // Upload the video from URL to Cloudinary
-    const result = await cloudinary.uploader.upload(googleVideoUrl, { 
-      resource_type: 'video' 
+    const result = await cloudinary.uploader.upload(googleVideoUrl, {
+      resource_type: 'video'
     });
 
     // Respond with the Cloudinary URL
@@ -41,6 +46,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to upload video to Cloudinary' });
   }
 }
+
 
 
 /*
