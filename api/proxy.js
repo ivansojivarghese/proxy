@@ -3,11 +3,11 @@ import cors from "cors";
 import fetch from "node-fetch"; // Replacement for request
 
 const app = express();
-
 // Enable CORS for all routes
 app.use(cors());
 
 export default async function handler(req, res) {
+// app.get("/", async (req, res) => {
     const queryParams = req.query;
     let videoUrl = queryParams.url;
 
@@ -44,12 +44,24 @@ export default async function handler(req, res) {
             'Accept': 'video/webm,video/mp4',  // Accept video formats
         };*/
 
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Referer': 'https://www.youtube.com/',  // Or other appropriate referrer
+            'Origin': 'https://www.youtube.com/',  // Or other appropriate origin
+            'Accept': 'video/webm,video/mp4',  // Accept video formats
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive'
+          };          
+
 
 
         // Fetch the video URL with redirects allowed
-        const response = await fetch(videoUrl, { redirect: 'follow' });
+        const response = await fetch(videoUrl, { headers, redirect: 'follow' });
 
         // console.log(res);
+
+        const body = await response.text(); // Or response.json() if it's JSON
+        console.log('Response Body:', body);
 
         // Log headers to check if they are coming through
         console.log('Response Headers:', response.headers);
@@ -77,6 +89,12 @@ export default async function handler(req, res) {
     }
 }
 
+// Make the server listen on port 3000
+/*
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+});
+*/
 /*
 
 export default async function handler(req, res) {
