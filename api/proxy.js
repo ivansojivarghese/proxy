@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         
         // Check if the result contains the download URL
         if (result && result.adaptiveFormats[0].url) {
-            res.status(200).json({ videoUrl: result.adaptiveFormats[0].url }); // Or adjust based on actual response structure
+            res.status(200).send(result.adaptiveFormats[0].url); // Or adjust based on actual response structure
         } else {
             res.status(500).json({ error: 'No video URL found in response' });
         }
