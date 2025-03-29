@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     // Get the updated video URL
     videoUrl = urlObj.toString();
 
-    console.log(videoUrl); // Log the final URL to see what we are working with
+    // console.log(videoUrl); // Log the final URL to see what we are working with
 
     res.setHeader('Access-Control-Allow-Origin', 'https://media-sphere.vercel.app');
     res.setHeader('Access-Control-Allow-Methods', 'GET');
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
         // Fetch the video URL with redirects allowed
         const response = await fetch(videoUrl, { redirect: 'follow' });
 
-        console.log(res);
+        // console.log(res);
 
         // Log headers to check if they are coming through
         console.log('Response Headers:', response.headers);
@@ -59,8 +59,11 @@ export default async function handler(req, res) {
             const finalUrl = response.url; // The final video URL after redirects
             console.log('Final URL:', finalUrl);
 
+            const contentType = response.headers.get('Content-Type');
+            res.setHeader('Content-Type', contentType || 'video/webm'); // Fallback to 'video/webm' if not available
+
             // Set the appropriate headers for video content
-            res.setHeader('Content-Type', 'video/webm');
+            // res.setHeader('Content-Type', 'video/webm');
             res.setHeader('Cache-Control', 'no-store'); // Do not cache video stream
 
             // Pipe the video data to the client
