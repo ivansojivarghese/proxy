@@ -1,6 +1,51 @@
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch"; // Replacement for request
+
+import fetch from 'node-fetch';
+
+export default async function handler(req, res) {
+    const { id, geo } = req.query;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Missing video ID' });
+    }
+
+    const url = `https://yt-api.p.rapidapi.com/dl?id=${id}&cgeo=${geo || 'DE'}`;
+    
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': '89ce58ef37msh8e59da617907bbcp1455bajsn66709ef67e50', // Your RapidAPI Key
+            'x-rapidapi-host': 'yt-api.p.rapidapi.com',
+        },
+    };
+
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+
+        if (!response.ok) {
+            return res.status(500).json({ error: 'Failed to fetch video info' });
+        }
+
+        // Assuming 'result' contains the video download URL in some format
+        // Make sure to check the structure of the response from RapidAPI
+        console.log(result); // This will help you debug the response structure
+        
+        // Check if the result contains the download URL
+        if (result && result.video_url) {
+            res.status(200).json({ videoUrl: result.video_url }); // Or adjust based on actual response structure
+        } else {
+            res.status(500).json({ error: 'No video URL found in response' });
+        }
+    } catch (error) {
+        console.error('Error fetching video:', error);
+        res.status(500).json({ error: 'Error fetching video data' });
+    }
+}
+
+
+/*
 
 const app = express();
 // Enable CORS for all routes
@@ -36,13 +81,6 @@ export default async function handler(req, res) {
 
     try {
         // Custom headers to simulate a real browser request
-        /*
-        const headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Referer': 'https://www.youtube.com/',
-            'Origin': 'https://www.youtube.com/',
-            'Accept': 'video/webm,video/mp4',  // Accept video formats
-        };*/
 
         const headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -88,6 +126,7 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'Server error while fetching video' });
     }
 }
+*/
 
 // Make the server listen on port 3000
 /*
