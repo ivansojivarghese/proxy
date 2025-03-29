@@ -27,6 +27,13 @@ export default async function handler(req, res) {
     console.log(videoUrl); // Log the final URL to see what we are working with
 
     try {
+
+        // Set custom headers to simulate a real browser request
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Referer': 'https://www.youtube.com/', // Set the referer to YouTube
+        };
+
         // Fetch the video URL with redirects allowed
         const response = await fetch(videoUrl, { redirect: 'follow' });
 
