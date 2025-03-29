@@ -2,7 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 // Configure Cloudinary
 cloudinary.config({
-  cloud_name: 'Media Sphere',
+  cloud_name: 'dwxwnbhr7',
   api_key: '996633859944319',
   api_secret: 'xBOhm7W-TZvYxCAK7VunPHStcjo'
 });
