@@ -2,8 +2,12 @@ import express from "express";
 import cors from "cors";
 import fetch from "node-fetch"; // Replacement for request
 
+const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
+
 export default async function handler(req, res) {
-    // const videoUrl = req.query.url; // assuming URL is passed as a query parameter
     const queryParams = req.query;
     let videoUrl = queryParams.url;
 
@@ -27,9 +31,8 @@ export default async function handler(req, res) {
     console.log(videoUrl); // Log the final URL to see what we are working with
 
     try {
-
-         // Custom headers to simulate a real browser request
-         const headers = {
+        // Custom headers to simulate a real browser request
+        const headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             'Referer': 'https://www.youtube.com/',
             'Origin': 'https://www.youtube.com/',
@@ -39,11 +42,13 @@ export default async function handler(req, res) {
         // Fetch the video URL with redirects allowed
         const response = await fetch(videoUrl, { headers, redirect: 'follow' });
 
-        console.log(response);
-        
+        // Log headers to check if they are coming through
+        console.log('Response Headers:', response.headers);
+
         // Check if the request was successful
         if (response.ok) {
             const finalUrl = response.url; // The final video URL after redirects
+            console.log('Final URL:', finalUrl);
 
             // Set the appropriate headers for video content
             res.setHeader('Content-Type', 'video/webm');
