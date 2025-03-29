@@ -1,64 +1,48 @@
-import express from "express";
-import cors from "cors";
 
-import fetch from 'node-fetch';
 
-// Initialize the app
-const app = express();
+import { v2 as cloudinary } from 'cloudinary';
 
-app.use(cors({
-    origin: 'https://media-sphere.vercel.app', // Allow only this origin
-  }));
+// Configure Cloudinary
+cloudinary.config({ 
+  cloud_name: 'Media Sphere', // Use the actual Cloud name
+  api_key: '996633859944319', // Use the actual API Key
+  api_secret: 'xBOhm7W-TZvYxCAK7VunPHStcjo' // Use the actual API Secret
+});
 
+// Vercel serverless function handler
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://media-sphere.vercel.app');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
-    const { id, geo } = req.query;
+  // Get Google Video URL from request body
+  const { googleVideoUrl } = req.body;
 
-    if (!id) {
-        return res.status(400).json({ error: 'Missing video ID' });
-    }
+  if (!googleVideoUrl) {
+    return res.status(400).json({ error: 'Missing Google Video URL' });
+  }
 
-    //  console.log(id, geo);
+  try {
+    // Upload the video from URL to Cloudinary
+    const result = await cloudinary.uploader.upload(googleVideoUrl, { 
+      resource_type: 'video' 
+    });
 
-    const url = `https://yt-api.p.rapidapi.com/dl?id=${id}&cgeo=${geo || 'DE'}`;
-    
-    const options = {
-        method: 'GET',
-        headers: {
-            'x-rapidapi-key': '89ce58ef37msh8e59da617907bbcp1455bajsn66709ef67e50', // Your RapidAPI Key
-            'x-rapidapi-host': 'yt-api.p.rapidapi.com',
-        },
-    };
+    // Respond with the Cloudinary URL
+    return res.status(200).json({ videoUrl: result.secure_url });
 
-    try {
-        const response = await fetch(url, options);
-        const result = await response.json();
-
-        if (!response.ok) {
-            return res.status(500).json({ error: 'Failed to fetch video info' });
-        }
-
-        // Assuming 'result' contains the video download URL in some format
-        // Make sure to check the structure of the response from RapidAPI
-        console.log(result); // This will help you debug the response structure
-        
-        // Check if the result contains the download URL
-        if (result && result.adaptiveFormats[0].url) {
-            res.status(200).send(result.adaptiveFormats[0].url); // Or adjust based on actual response structure
-        } else {
-            res.status(500).json({ error: 'No video URL found in response' });
-        }
-    } catch (error) {
-        console.error('Error fetching video:', error);
-        res.status(500).json({ error: 'Error fetching video data' });
-    }
+  } catch (error) {
+    console.error("Upload Error:", error);
+    return res.status(500).json({ error: 'Failed to upload video to Cloudinary' });
+  }
 }
 
 
 /*
+
+import express from "express";
+import cors from "cors";
+import fetch from 'node-fetch';
 
 const app = express();
 // Enable CORS for all routes
