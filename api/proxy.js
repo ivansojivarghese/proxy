@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Missing video ID' });
     }
 
-    console.log(id, geo);
+    //  console.log(id, geo);
 
     const url = `https://yt-api.p.rapidapi.com/dl?id=${id}&cgeo=${geo || 'DE'}`;
     
@@ -35,8 +35,8 @@ export default async function handler(req, res) {
         console.log(result); // This will help you debug the response structure
         
         // Check if the result contains the download URL
-        if (result && result.video_url) {
-            res.status(200).json({ videoUrl: result.video_url }); // Or adjust based on actual response structure
+        if (result && result.adaptiveFormats[0].url) {
+            res.status(200).json({ videoUrl: result.adaptiveFormats[0].url }); // Or adjust based on actual response structure
         } else {
             res.status(500).json({ error: 'No video URL found in response' });
         }
