@@ -10,6 +10,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Missing video ID' });
     }
 
+    console.log(id, geo);
+
     const url = `https://yt-api.p.rapidapi.com/dl?id=${id}&cgeo=${geo || 'DE'}`;
     
     const options = {
