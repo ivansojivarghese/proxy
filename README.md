@@ -44,12 +44,12 @@ To use the image proxy, make a `GET` request to your deployed Vercel function wi
 https://<your-vercel-project>.vercel.app/api/proxy?url=<image-url>
 ```
 
-Replace `<your-vercel-project>` with the name of your Vercel project and `<image-url>` with the URL of the image you want to fetch.
+Replace `<your-vercel-project>` with the name of this Vercel project and `<image-url>` with the URL of the image you want to fetch.
 
 For example:
 
 ```
-https://<your-vercel-project>.vercel.app/api/proxy?url=https://example.com/image.jpg
+https://proxy-five-puce.vercel.app/api/proxy?url=https://example.com/image.jpg
 ```
 
 The function will fetch the image from the provided URL and return it to the requester.
